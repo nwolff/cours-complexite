@@ -1,0 +1,49 @@
+{% extends "team_base.html" %}
+
+{% block title %}Algorithmes de recherche{% endblock %}
+
+{% block nav_search %}active{% endblock %}
+
+{% block content %}
+
+{% if stat %}
+<div class="jumbotron">
+  <H2>Résultat</H2>
+  <dl>
+    <dt>Algorithme</dt>
+    <dd>{{ stat.algorithm }}</dd>
+    <dt>Max du nombre recherché</dt>
+    <dd>{{ stat.n | num }}</dd>
+    <dt>Nombre d'essais</dt>
+    <dd>{{ stat.result | num }}</dd>
+  </dl>
+</div>
+<hr>
+{% endif %}
+
+<H2>Lancer une recherche</H2>
+<form action="" method="post">
+    <div class="mb-3 mt-3">
+      <label>Algorithme</label>
+      <select class="form-control" name="algorithm_name">
+        {% for a_name in algorithm_names %}
+        <option value="{{a_name}}">{{a_name}}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="mb-3 mt-3">
+      <label>Nombre max</label>
+      <select class="form-control" name="max">
+        {% for max in choices_of_max %}
+        <option value="{{max}}">{{max | num}}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="mb-3 mt-3">
+      <button type="submit" class="btn btn-primary">
+        Lancer
+      </button>
+    </div>
+  </form>
+
+{% endblock %}

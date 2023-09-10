@@ -1,0 +1,92 @@
+import sqlite3
+from dataclasses import asdict
+
+import aiosqlite
+from model import Stat
+
+DB_PATH = "stats.db"
+
+with sqlite3.connect(DB_PATH) as con:
+    con.execute("DROP TABLE stats")  # XXX
+
+    con.execute(
+        "CREATE TABLE IF NOT EXISTS stats"
+        "( id INTEGER PRIMARY KEY"
+        ", tenant STRING"
+        ", timestamp STRING"
+        ", team STRING"
+        ", algorithm STRING"
+        ", n INTEGER"
+        ", result INTEGER"
+        ");"
+    )
+    con.execute("CREATE INDEX IF NOT EXISTS tenant_idx ON stats(tenant)")
+    con.execute("CREATE INDEX IF NOT EXISTS team_idx ON stats(team)")
+    con.execute("CREATE INDEX IF NOT EXISTS algorithm_idx ON stats(algorithm)")
+
+
+_SELECT_STATS_WHERE_TENANT = (
+    "SELECT timestamp, team, algorithm, n, result FROM stats WHERE tenant=?"
+)
+
+
+async def all_algorithms(tenant: str) -> list[str]:
+    async with aiosqlite.connect(DB_PATH) as db:
+        async with db.execute(
+            "SELECT DISTINCT algorithm FROM stats WHERE tenant=?", (tenant,)
+        ) as cursor:
+            res = await cursor.fetchall()
+            return [row[0] for row in res]
+
+
+async def all_teams(tenant: str) -> list[str]:
+    async with aiosqlite.connect(DB_PATH) as db:
+        async with db.execute(
+            "SELECT DISTINCT team FROM stats WHERE tenant=?", (tenant,)
+        ) as cursor:
+            res = await cursor.fetchall()
+            return [row[0] for row in res]
+
+
+async def stats(tenant: str, team: str = "", algorithm: str = "") -> list[Stat]:
+    query = _SELECT_STATS_WHERE_TENANT
+    params = [tenant]
+    if team:
+        query += " AND team=?"
+        params.append(team)
+    if algorithm:
+        query += " AND algorithm=?"
+        params.append(algorithm)
+
+    async with aiosqlite.connect(DB_PATH) as db:
+        async with db.execute(query, params) as cursor:
+            res = await cursor.fetchall()
+            return _rows_to_stats(res)
+
+
+async def insert_stat(tenant: str, stat: Stat) -> None:  # XXX
+    data = asdict(stat)
+    data["tenant"] = tenant
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute(
+            "INSERT INTO stats(tenant, timestamp, team, algorithm, n, result)"
+            " VALUES(:tenant, :timestamp, :team, :algorithm, :n, :result)",
+            data,
+        )
+        await db.commit()
+
+
+async def delete_all(tenant: str) -> None:
+    async with aiosqlite.connect(DB_PATH) as db:
+        await db.execute("DELETE from stats WHERE tenant=?", (tenant,))
+        await db.commit()
+
+
+def _rows_to_stats(res):
+    return [_row_to_stat(row) for row in res]
+
+
+def _row_to_stat(row):
+    return Stat(
+        timestamp=row[0], team=row[1], algorithm=row[2], n=row[3], result=row[4]
+    )

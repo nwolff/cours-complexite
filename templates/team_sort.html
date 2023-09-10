@@ -1,0 +1,49 @@
+{% extends "team_base.html" %}
+
+{% block title %}Algorithmes de tri{% endblock %}
+
+{% block nav_sort %}active{% endblock %}
+
+{% block content %}
+
+{% if stat %}
+<div class="jumbotron">
+  <H2>Résultat</H2>
+  <dl>
+    <dt>Algorithme</dt>
+    <dd>{{ stat.algorithm }}</dd>
+    <dt>Taille de la liste à trier</dt>
+    <dd>{{ stat.n | num }}</dd>
+    <dt>Nombre d'échanges d'eléments</dt>
+    <dd>{{ stat.result | num }}</dd>
+  </dl>
+</div>
+<hr>
+{% endif %}
+
+<H2>Lancer un tri</H2>
+<form action="" method="post">
+    <div class="mb-3 mt-3">
+      <label>Algorithme</label>
+      <select class="form-control" name="algorithm_name">
+        {% for a_name in algorithm_names %}
+        <option value="{{a_name}}">{{a_name}}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="mb-3 mt-3">
+      <label>Taille de la liste</label>
+      <select class="form-control" name="list_size">
+        {% for size in choices_of_size %}
+        <option value="{{size}}">{{size | num}}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="mb-3 mt-3">
+      <button type="submit" class="btn btn-primary">
+        Lancer
+      </button>
+    </div>
+  </form>
+
+{% endblock %}
