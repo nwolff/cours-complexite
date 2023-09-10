@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+  {% block nav %}
+  <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <div class="container-fluid">
+      <ul class="navbar-nav">
+        <a class="nav-item nav-link {% block nav_play %}{% endblock %}" 
+          href="{{ url_for("team_play", team=team) }}">Jouer</a>
+        <a class="nav-item nav-link {% block nav_search %}{% endblock %}" 
+          href="{{ url_for("team_search", team=team) }}">Algos de recherche</a>
+        <a class="nav-item nav-link {% block nav_sort %}{% endblock %}" 
+          href="{{ url_for("team_sort", team=team) }}">Algos de tri</a>
+        <a class="nav-item nav-link {% block nav_stats %}{% endblock %}" 
+          href="{{ url_for("team_stats", team=team) }}">Télécharger vos stats</a>
+      </ul>
+    </div>
+  </nav>
+  {% endblock %}
+
