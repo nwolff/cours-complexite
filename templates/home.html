@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Bienvenue{% endblock %}
+
+{% block content %}
+<H1>Bienvenue</H1>
+
+<form method="post">
+    <div class="mb-3">
+    <label for="team" class="form-label">Choisissez un nom d'équipe</label>
+    <input type="text" class="form-control" name="team" 
+           placeholder="un nom d'équipe"
+           value="{{ request.form['team'] }}"></input>
+    </div>
+    <button type="submit" class="btn btn-primary">Continuer</button>
+</form>
+{% endblock %}
