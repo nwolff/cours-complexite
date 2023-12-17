@@ -1,27 +1,38 @@
-# Déployé ici
+# create-svelte
 
-https://cours-complexite-bppjye22la-oa.a.run.app/
+Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
 
-# Développement
+## Creating a project
 
-## Pour exécuter n'importe quel script qui utilise firestore
+If you're seeing this, you've probably already done this step. Congrats!
 
-    gcloud init
+```bash
+# create a new project in the current directory
+npm create svelte@latest
 
-    gcloud auth application-default login
+# create a new project in my-app
+npm create svelte@latest my-app
+```
 
-A partir de là il est possible de lancer n'importe quel exécutable python (cli, dump_stats, main, etc)
+## Developing
 
-## Pour vérifier le packaging avant de déployer sur gcloud
+Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
 
-    gcloud beta code dev
+```bash
+npm run dev
 
-    docker run -e PORT=80 -p 80:80 --rm -it $(docker build -q .)
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
+```
 
-# Améliorations
+## Building
 
-- Vérifier pourquoi parfois on ne peut pas télécharger ses stats (en salle de classe par exemple)
+To create a production version of your app:
 
-- Changer l'architecture : pour l'instant quand on fait des traitements trop lourds comme par exemple un tri par insertion d'une liste d'un million d'éléments on obtient de la part de google cloud "rate exceeded". Wait dialog after submit ne devient plus nécéssaire si on fait ça. Sticky settings in forms non plus
+```bash
+npm run build
+```
 
-- Jouer interactivement
+You can preview the production build with `npm run preview`.
+
+> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
