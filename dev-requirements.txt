@@ -1,7 +1,0 @@
--r requirements.txt
--r cli-requirements.txt
-
-black
-isort
-ruff
-mypy

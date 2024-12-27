@@ -1,0 +1,52 @@
+name: Deploy to GitHub Pages
+
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: [main]
+
+  # Allows running this workflow manually from the Actions tab
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one deployment runs at a time. New pushes queue rather than cancelling the current deploy.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install elm and tools
+        uses: jorelali/setup-elm@v6
+        with:
+          elm-version: 0.19.1
+
+      - name: Build
+        working-directory: elm
+        run: elm make src/Main.elm --optimize --output=public/dist/elm.js
+
+      # GitHub Pages returns 404.html for unknown paths — this gives us SPA routing on refresh.
+      - name: Copy index.html to 404.html for SPA routing
+        run: cp elm/public/index.html elm/public/404.html
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: elm/public/
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

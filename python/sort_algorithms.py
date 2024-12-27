@@ -4,6 +4,9 @@ SortAlgorithm = Callable[[list[Any]], int]
 
 
 def partition(mylist, start, end, count):
+    """Place the pivot (last element) at its final position.
+    All elements to its left are smaller, to its right are larger.
+    Returns the pivot position and the comparison count."""
     pos = start
     for i in range(start, end):
         count += 1
@@ -15,6 +18,8 @@ def partition(mylist, start, end, count):
 
 
 def quicksort_helper(mylist, start, end, count):
+    """Recursively sort mylist[start..end] in place.
+    Partitions around a pivot, then sorts the two subarrays."""
     if start < end:
         pos, count = partition(mylist, start, end, count)
         count = quicksort_helper(mylist, start, pos - 1, count)
@@ -23,6 +28,7 @@ def quicksort_helper(mylist, start, end, count):
 
 
 def quicksort(lst: list[Any]) -> int:
+    """Sort lst in place using quicksort. Returns the number of comparisons."""
     return quicksort_helper(lst, 0, len(lst) - 1, 0)
 
 
@@ -31,22 +37,24 @@ def quicksort(lst: list[Any]) -> int:
 # https://gist.github.com/dishaumarwani/b6d5f4a1b2f741d5bee8d0f69263c48f
 
 
-def merge(arr, l, m, r):
+def merge(arr, lo, mo, ro):
+    """Merge two sorted subarrays arr[lo..mo] and arr[mo+1..ro].
+    Returns the number of inversions between the two halves."""
     # No need of merging if subarray form a sorted array after joining
-    if arr[m] <= arr[m + 1]:
+    if arr[mo] <= arr[mo + 1]:
         return 0
 
-    L = arr[l : m + 1]
-    R = arr[m + 1 : r + 1]
+    L = arr[lo : mo + 1]
+    R = arr[mo + 1 : ro + 1]
 
-    # Merge the temp arrays back into arr[l..r]
+    # Merge the temp arrays back into arr[lo..ro]
 
     i = 0  # Initial index of first subarray
     j = 0  # Initial index of second subarray
-    k = l  # Initial index of merged subarray
+    k = lo  # Initial index of merged subarray
 
-    len_l = m + 1 - l
-    len_r = r - m
+    len_l = mo + 1 - lo
+    len_r = ro - mo
 
     cnt = 0
     while i < len_l and j < len_r:
@@ -64,18 +72,19 @@ def merge(arr, l, m, r):
     return cnt
 
 
-def merge_sort(arr: list[Any], l=None, r=None) -> int:
-    if l is None:
-        l = 0
-    if r is None:
-        r = len(arr) - 1
+def merge_sort(arr: list[Any], lo=None, ro=None) -> int:
+    """Sort arr[lo..ro] in place using merge sort. Returns the number of inversions."""
+    if lo is None:
+        lo = 0
+    if ro is None:
+        ro = len(arr) - 1
 
     x = 0
-    if l < r:
-        m = (l + r) // 2
-        x = merge_sort(arr, l, m)
-        x += merge_sort(arr, m + 1, r)
-        x += merge(arr, l, m, r)
+    if lo < ro:
+        mo = (lo + ro) // 2
+        x = merge_sort(arr, lo, mo)
+        x += merge_sort(arr, mo + 1, ro)
+        x += merge(arr, lo, mo, ro)
     return x
 
 
@@ -85,6 +94,7 @@ def merge_sort(arr: list[Any], l=None, r=None) -> int:
 
 
 def insertion_sort(array: list[Any]) -> int:
+    """Sort array in place using insertion sort. Returns the number of comparisons."""
     swapsmade = 0
     checksmade = 0
     for f in range(len(array)):

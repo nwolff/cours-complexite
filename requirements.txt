@@ -1,6 +1,0 @@
-Flask
-gunicorn
-google-cloud-firestore
-
-openpyxl
-XlsxWriter

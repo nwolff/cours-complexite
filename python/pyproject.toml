@@ -1,0 +1,14 @@
+[project]
+name = "python"
+version = "0.1.0"
+description = "Outils ligne de commande cours complexité"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "google-cloud-firestore>=2.27.0",
+    "openpyxl>=3.1.5",
+    "xlsxwriter>=3.2.9",
+]
+
+[dependency-groups]
+dev = ["mypy>=1.20.1", "ruff>=0.15.10"]

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Complexité des algorithmes</title>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <!-- Compiled Elm app -->
+    <script src="/dist/elm.js"></script>
+
+    <!-- Firebase bridge: connects Elm ports to Firestore real-time updates -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        addDoc,
+        deleteDoc,
+        doc,
+        query,
+        orderBy,
+        onSnapshot,
+        serverTimestamp,
+      } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+      import {
+        getAuth,
+        signInWithPopup,
+        signOut,
+        GoogleAuthProvider,
+        onAuthStateChanged,
+      } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
+
+      // ── Firebase config ──────────────────────────────────────────────────────
+      // The apiKey is intentionally public (it identifies the project to Firebase).
+      // Access is controlled by Firestore security rules, not by keeping this secret.
+      const firebaseConfig = {
+        apiKey: "AIzaSyBqi40zm_W6iIA6Xcesl2VaEYSFdxkXUME",
+        authDomain: "cours-complexite-446113.firebaseapp.com",
+        projectId: "cours-complexite-446113",
+        storageBucket: "cours-complexite-446113.firebasestorage.app",
+        messagingSenderId: "179176215740",
+        appId: "1:179176215740:web:0ebcaea83800c5b0102cb9",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app, "cours-complexite");
+      const statsRef = collection(db, "stats");
+      const auth = getAuth(app);
+      const googleProvider = new GoogleAuthProvider();
+
+      // ── Elm initialisation ───────────────────────────────────────────────────
+      const elmApp = Elm.Main.init({ node: document.getElementById("app") });
+
+      const sendError = (msg) => elmApp.ports.firestoreError.send(msg);
+
+      // ── Elm → Firestore: student submits a result ────────────────────────────
+      elmApp.ports.saveResult.subscribe((stat) => {
+        addDoc(statsRef, { ...stat, timestamp: serverTimestamp() }).catch(
+          (err) =>
+            sendError("Impossible d'enregistrer le résultat : " + err.message),
+        );
+      });
+
+      // ── Elm → Firestore: teacher deletes a result ────────────────────────────
+      elmApp.ports.deleteDoc.subscribe((docId) => {
+        deleteDoc(doc(db, "stats", docId)).catch((err) =>
+          sendError("Impossible de supprimer : " + err.message),
+        );
+      });
+
+      // ── Firestore → Elm: live updates ────────────────────────────────────────
+      const q = query(statsRef, orderBy("timestamp", "desc"));
+      onSnapshot(
+        q,
+        (snapshot) => {
+          const stats = snapshot.docs.map((document) => {
+            const d = document.data();
+            return {
+              id: document.id,
+              team: d.team,
+              algorithm: d.algorithm,
+              n: d.n,
+              result: d.result,
+              // d.timestamp is a Firestore Timestamp (from JS) or an ISO string (from Python CLI).
+              // Use ?.() so a non-Timestamp value falls through to the ISO-string branch.
+              timestamp: d.timestamp?.toMillis?.() ?? (d.timestamp ? new Date(d.timestamp).getTime() : 0),
+            };
+          });
+          elmApp.ports.receivedStats.send(stats);
+        },
+        (err) =>
+          sendError(
+            "Erreur de connexion à la base de données : " + err.message,
+          ),
+      );
+
+      // ── Firebase Auth ────────────────────────────────────────────────────────
+      // Auth state changes → Elm (sends email string or null)
+      onAuthStateChanged(auth, (user) => {
+        elmApp.ports.receivedAuthState.send(user ? user.email : null);
+      });
+
+      // Elm → sign in with Google popup
+      elmApp.ports.signInWithGoogle.subscribe(() => {
+        signInWithPopup(auth, googleProvider).catch((err) =>
+          sendError("Connexion impossible : " + err.message),
+        );
+      });
+
+      // Elm → sign out
+      elmApp.ports.signOutTeacher.subscribe(() => {
+        signOut(auth).catch((err) =>
+          sendError("Déconnexion impossible : " + err.message),
+        );
+      });
+    </script>
+  </body>
+</html>

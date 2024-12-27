@@ -1,17 +1,11 @@
-# All types of virtualenvs
-.direnv/
-.venv/
-.env/
-
-# Always
-__pycache__/
-
 # IDEs
-.vscode/
+*.iml
 .idea/
+.vscode/
 
 # Mac
 .DS_Store
 
-# The results of dumping
-*.xlsx
+# Claude local settings
+.claude
+
