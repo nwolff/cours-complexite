@@ -32,8 +32,8 @@ for algorithm_name, sort_algorithm in algorithms.sort.registry.items():
             print(f"\t {algorithm_name}, taille: {n:_} (round {round})")
             lst = list(range(n))
             random.shuffle(lst)
-            swaps = sort_algorithm(lst)
+            checks = sort_algorithm(lst)
             stat = stats.Stat(
-                team="autobot", algorithm=algorithm_name, n=n, result=swaps
+                team="autobot", algorithm=algorithm_name, n=n, result=checks
             )
             stats.insert_stat(stat)

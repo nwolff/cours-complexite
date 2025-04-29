@@ -98,11 +98,11 @@ def insertion_sort(array: list[Any]) -> int:
             checksmade += 1
             swapsmade += 1
         array[valueindex] = value
-    return swapsmade
+    return checksmade
 
 
 registry: dict[str, SortAlgorithm] = {
     # "Tri par fusion": merge_sort,
-    "Tri par insertion": insertion_sort,
     "Tri rapide": quicksort,
+    "Tri par insertion": insertion_sort,
 }

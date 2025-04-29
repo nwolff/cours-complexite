@@ -36,6 +36,14 @@ def shuffled_sequence(max: int, oracle: Oracle):
             return
 
 
+def completely_random(max: int, oracle: Oracle):
+    while True:
+        guess = random.randint(0, max)
+        outcome = oracle(guess)
+        if outcome == 0:
+            return
+
+
 def dichotomy(max: int, oracle: Oracle):
     lower = 1
     upper = max
@@ -51,7 +59,8 @@ def dichotomy(max: int, oracle: Oracle):
 
 
 registry = {
-    "Séquentiel": sequential,
-    "Séquence mélangée": shuffled_sequence,
-    "Dichotomie": dichotomy,
+    "Recherche dichotomique": dichotomy,
+    "Recherche séquentielle": sequential,
+    "Recherche Séquentielle mélangée": shuffled_sequence,
+    "Recherche aléatoire": completely_random,
 }
