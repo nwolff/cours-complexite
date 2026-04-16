@@ -42,6 +42,20 @@ jobs:
       - name: Copy index.html to 404.html for SPA routing
         run: cp elm/public/index.html elm/public/404.html
 
+      - name: Compute build metadata
+        id: meta
+        run: |
+          echo "short_sha=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
+          echo "timestamp=$(TZ=Europe/Zurich date '+%Y-%m-%d %H:%M %Z')" >> $GITHUB_OUTPUT
+
+      - name: Inject build info into about.html
+        uses: cschleiden/replace-tokens@v1
+        with:
+          files: '["elm/public/about.html"]'
+        env:
+          SHORT_SHA: ${{ steps.meta.outputs.short_sha }}
+          TIMESTAMP: ${{ steps.meta.outputs.timestamp }}
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

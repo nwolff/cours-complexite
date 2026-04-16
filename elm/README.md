@@ -54,13 +54,12 @@ npx serve --single public
 Push to `main` — GitHub Actions builds and deploys to GitHub Pages automatically.
 See `.github/workflows/deploy.yml`.
 
-After deploying to a new domain, add it to Firebase Console → Authentication → Authorized domains.
+After deploying to a new domain, add it to Firebase Console → Authentication → Authorized domains (for login to work).
 
 ## Firebase
 
-- Firestore database name: `stats`
+- Firestore database name: `cours-complexite`
 - Security rules: students can create (validated), teacher's Gmail can delete, all can read
-- The `dist/elm.js` file is gitignored — the workflow builds it fresh on each deploy
 
 ## Algorithms
 

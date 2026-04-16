@@ -23,7 +23,7 @@ view state =
             []
         , Ui.viewError state.error
         , button [ onClick HomeSubmit, Ui.btnStyle ] [ text "Commencer" ]
-        , p [ style "margin-top" "40px" ]
+        , p [ style "margin-top" "40px", style "display" "flex", style "justify-content" "space-between" ]
             [ a
                 [ onClick GoToTeacher
                 , href "#"
@@ -31,6 +31,14 @@ view state =
                 , style "font-size" "0.85rem"
                 ]
                 [ text "Vue enseignant →" ]
+            , a
+                [ href "about.html"
+                , target "_blank"
+                , style "color" "#adb5bd"
+                , style "text-decoration" "none"
+                , title "À propos"
+                ]
+                [ text "ⓘ" ]
             ]
         ]
 
