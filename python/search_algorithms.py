@@ -61,6 +61,6 @@ def dichotomy(max: int, oracle: Oracle):
 registry = {
     "Recherche dichotomique": dichotomy,
     "Recherche séquentielle": sequential,
-    "Recherche Séquentielle mélangée": shuffled_sequence,
+    "Recherche séquentielle mélangée": shuffled_sequence,
     "Recherche aléatoire": completely_random,
 }

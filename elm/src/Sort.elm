@@ -2,17 +2,13 @@ module Sort exposing (Algorithm(..), algorithmName, allAlgorithms, run, sortSize
 
 
 type Algorithm
-    = QuickSort
-    | InsertionSort
+    = InsertionSort
     | MergeSort
 
 
 algorithmName : Algorithm -> String
 algorithmName algo =
     case algo of
-        QuickSort ->
-            "Tri rapide"
-
         InsertionSort ->
             "Tri par insertion"
 
@@ -22,7 +18,7 @@ algorithmName algo =
 
 allAlgorithms : List Algorithm
 allAlgorithms =
-    [ QuickSort, MergeSort, InsertionSort ]
+    [ MergeSort, InsertionSort ]
 
 
 
@@ -38,42 +34,11 @@ sortSizes =
 run : Algorithm -> List Int -> Int
 run algo lst =
     case algo of
-        QuickSort ->
-            quicksort lst
-
         InsertionSort ->
             insertionSort lst
 
         MergeSort ->
             mergeSort lst
-
-
-
--- QUICKSORT
--- Functional pivot-first quicksort.
--- Comparisons = List.length of each partition's tail, summed recursively.
--- Picks first element as pivot → O(n²) on sorted input, O(n log n) on random.
--- We always sort a freshly shuffled list, so worst-case is very unlikely.
-
-
-quicksort : List Int -> Int
-quicksort lst =
-    case lst of
-        [] ->
-            0
-
-        _ :: [] ->
-            0
-
-        pivot :: rest ->
-            let
-                ( smaller, larger ) =
-                    List.partition (\x -> x < pivot) rest
-
-                comparisons =
-                    List.length rest
-            in
-            comparisons + quicksort smaller + quicksort larger
 
 
 

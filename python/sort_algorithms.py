@@ -3,35 +3,6 @@ from typing import Any, Callable
 SortAlgorithm = Callable[[list[Any]], int]
 
 
-def partition(mylist, start, end, count):
-    """Place the pivot (last element) at its final position.
-    All elements to its left are smaller, to its right are larger.
-    Returns the pivot position and the comparison count."""
-    pos = start
-    for i in range(start, end):
-        count += 1
-        if mylist[i] < mylist[end]:
-            mylist[i], mylist[pos] = mylist[pos], mylist[i]
-            pos += 1
-    mylist[pos], mylist[end] = mylist[end], mylist[pos]
-    return pos, count
-
-
-def quicksort_helper(mylist, start, end, count):
-    """Recursively sort mylist[start..end] in place.
-    Partitions around a pivot, then sorts the two subarrays."""
-    if start < end:
-        pos, count = partition(mylist, start, end, count)
-        count = quicksort_helper(mylist, start, pos - 1, count)
-        count = quicksort_helper(mylist, pos + 1, end, count)
-    return count
-
-
-def quicksort(lst: list[Any]) -> int:
-    """Sort lst in place using quicksort. Returns the number of comparisons."""
-    return quicksort_helper(lst, 0, len(lst) - 1, 0)
-
-
 ##########################
 # Merge sort from
 # https://gist.github.com/dishaumarwani/b6d5f4a1b2f741d5bee8d0f69263c48f
@@ -112,7 +83,6 @@ def insertion_sort(array: list[Any]) -> int:
 
 
 registry: dict[str, SortAlgorithm] = {
-    # "Tri par fusion": merge_sort,
-    "Tri rapide": quicksort,
+    "Tri par fusion": merge_sort,
     "Tri par insertion": insertion_sort,
 }

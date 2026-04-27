@@ -47,9 +47,6 @@ view team state =
 algoKey : Sort.Algorithm -> String
 algoKey algo =
     case algo of
-        Sort.QuickSort ->
-            "quicksort"
-
         Sort.InsertionSort ->
             "insertion"
 
@@ -63,8 +60,5 @@ parseAlgo s =
         "insertion" ->
             Sort.InsertionSort
 
-        "merge" ->
-            Sort.MergeSort
-
         _ ->
-            Sort.QuickSort
+            Sort.MergeSort
